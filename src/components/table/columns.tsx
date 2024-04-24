@@ -175,7 +175,7 @@ export const columns: ColumnDef<Payment>[] = [
         setStudent(data);
       }, []);
 
-      useMemo(() => memoizedLoadData(), []);
+      useMemo(() => memoizedLoadData(), [memoizedLoadData]);
       return (
         <div className="flex items-center gap-1">
           <TooltipProvider>
@@ -191,7 +191,7 @@ export const columns: ColumnDef<Payment>[] = [
                         }
                       >
                         <StudentDetailsForm student={student} type={"update"} />
-                      </CustomModal>,
+                      </CustomModal>
                     )
                   }
                 >
@@ -244,7 +244,7 @@ export const columns: ColumnDef<Payment>[] = [
                               </Button>
                             </div>
                           </div>
-                        </CustomModal>,
+                        </CustomModal>
                       )
                     }
                   >

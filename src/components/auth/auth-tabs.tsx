@@ -4,7 +4,7 @@ import { RegisterForm } from "../form/auth/register-details";
 
 export function AuthTabs() {
   return (
-    <Tabs defaultValue="login" className="w-[400px]">
+    <Tabs defaultValue="login">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="login">Login</TabsTrigger>
         <TabsTrigger value="register">Register</TabsTrigger>

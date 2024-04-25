@@ -18,7 +18,7 @@ export default async function MainLayout({
     <>
       <header
         style={{ zIndex: 10 }}
-        className="fixed top-0 flex h-[5rem] min-w-full items-center border-b bg-white/40 px-8 backdrop-blur-md dark:bg-black/40"
+        className="fixed top-0 flex h-[5rem] w-full items-center border-b bg-white/40 px-8 backdrop-blur-md dark:bg-black/40"
       >
         <div className="flex items-center gap-2">
           <LucideHome />

@@ -170,7 +170,7 @@ export function StudentDetailsForm({
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-[12rem]">
                     <SelectValue placeholder="Assign..." />
                   </SelectTrigger>
                   <SelectContent>

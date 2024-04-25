@@ -17,17 +17,11 @@ import {
 } from "@/components/ui/tooltip";
 import { useModal } from "@/providers/modal-provider";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Edit, Edit2, Loader, Trash } from "lucide-react";
+import { ArrowUpDown, Edit, Loader, Trash } from "lucide-react";
 import Image from "next/image";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useTransition,
-} from "react";
-import { useToast } from "../ui/use-toast";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import { StudentDetailsForm } from "../form/student-details";
+import { useToast } from "../ui/use-toast";
 
 export type Payment = {
   id: string;
@@ -43,7 +37,7 @@ export const columns: ColumnDef<Payment>[] = [
     header: ({ column }) => {
       return (
         <Button
-          className="w-[70px]"
+          // className="w-[90px]"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -100,18 +94,6 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => {
-      return (
-        <HoverCard>
-          <HoverCardTrigger className="text-[1.2rem]">
-            {row.original.name}
-          </HoverCardTrigger>
-          <HoverCardContent>
-            The React Framework – created and maintained by @vercel.
-          </HoverCardContent>
-        </HoverCard>
-      );
-    },
   },
   {
     accessorKey: "class",
@@ -156,107 +138,114 @@ export const columns: ColumnDef<Payment>[] = [
     id: "actions",
     header: ({ column }) => {
       return (
-        <Button variant="ghost" className="w-[50px]">
-          Crud Actions
+        <Button variant="ghost" className="w-[80px]">
+          Actions
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const [isPending, startTransition] = useTransition();
-      const { toast } = useToast();
-      const payment = row.original;
-      const { setOpen, setClose } = useModal();
-      const [student, setStudent] = useState({});
-
-      const memoizedLoadData = useCallback(async () => {
-        const result = await getStudentById({ id: row.original.id });
-        const { data } = JSON.parse(result);
-        setStudent(data);
-      }, []);
-
-      useMemo(() => memoizedLoadData(), [memoizedLoadData]);
-      return (
-        <div className="flex items-center gap-1">
-          <TooltipProvider>
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger>
-                <Badge
-                  onClick={() =>
-                    setOpen(
-                      <CustomModal
-                        title={"Update exisiting user"}
-                        description={
-                          "You can use the following form to update user details."
-                        }
-                      >
-                        <StudentDetailsForm student={student} type={"update"} />
-                      </CustomModal>
-                    )
-                  }
-                >
-                  <Edit size={16} />
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent>Update student data</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger>
-                {isPending ? (
-                  <Loader className="animate-spin" />
-                ) : (
-                  <Badge
-                    className="bg-red-700"
-                    onClick={() =>
-                      setOpen(
-                        <CustomModal
-                          title={"Are you absolutely sure?"}
-                          description={
-                            "This action cannot be undone. This will permanently delete the student's account from the servers."
-                          }
-                        >
-                          <div className="flex">
-                            <div className="ml-auto flex items-center gap-2">
-                              <Button
-                                variant={"destructive"}
-                                onClick={async () => {
-                                  startTransition(async () => {
-                                    await deleteStudent({
-                                      id: row.original.id,
-                                    });
-                                    toast({
-                                      title: `${row.original.name} sucessfully deleted!`,
-                                    });
-                                    setClose();
-                                  });
-                                }}
-                              >
-                                Delete
-                              </Button>
-                              <Button
-                                variant={"outline"}
-                                onClick={() => setClose()}
-                              >
-                                Cancel
-                              </Button>
-                            </div>
-                          </div>
-                        </CustomModal>
-                      )
-                    }
-                  >
-                    <Trash size={16} />
-                  </Badge>
-                )}
-              </TooltipTrigger>
-              <TooltipContent>Delete student data</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      );
+      return <CellActions rowData={row} />;
     },
   },
 ];
+
+interface CellActionsProps {
+  rowData: any;
+}
+const CellActions: React.FC<CellActionsProps> = ({ rowData }) => {
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+  const payment = rowData.original;
+  const { setOpen, setClose } = useModal();
+  const [student, setStudent] = useState({});
+
+  const memoizedLoadData = useCallback(async () => {
+    const result = await getStudentById({ id: rowData.original.id });
+    const { data } = JSON.parse(result);
+    setStudent(data);
+  }, []);
+
+  useMemo(() => memoizedLoadData(), []);
+  return (
+    <div className="flex items-center gap-1">
+      <TooltipProvider>
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger>
+            <Badge
+              onClick={() =>
+                setOpen(
+                  <CustomModal
+                    title={"Update exisiting user"}
+                    description={
+                      "You can use the following form to update user details."
+                    }
+                  >
+                    <StudentDetailsForm student={student} type={"update"} />
+                  </CustomModal>
+                )
+              }
+            >
+              <Edit size={16} />
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>Update student data</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger>
+            {isPending ? (
+              <Loader className="animate-spin" />
+            ) : (
+              <Badge
+                className="bg-red-700"
+                onClick={() =>
+                  setOpen(
+                    <CustomModal
+                      title={"Are you absolutely sure?"}
+                      description={
+                        "This action cannot be undone. This will permanently delete the student's account from the servers."
+                      }
+                    >
+                      <div className="flex">
+                        <div className="ml-auto flex items-center gap-2">
+                          <Button
+                            variant={"destructive"}
+                            onClick={async () => {
+                              startTransition(async () => {
+                                await deleteStudent({
+                                  id: rowData.original.id,
+                                });
+                                toast({
+                                  title: `${rowData.original.name} sucessfully deleted!`,
+                                });
+                                setClose();
+                              });
+                            }}
+                          >
+                            Delete
+                          </Button>
+                          <Button
+                            variant={"outline"}
+                            onClick={() => setClose()}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    </CustomModal>
+                  )
+                }
+              >
+                <Trash size={16} />
+              </Badge>
+            )}
+          </TooltipTrigger>
+          <TooltipContent>Delete student data</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  );
+};

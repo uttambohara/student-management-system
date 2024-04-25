@@ -25,7 +25,7 @@ export default function BarChart({ studentByCourse }: BarChartProps) {
         </CardTitle>
       </CardHeader>
 
-      <div className="h-fit w-[20rem] sm:w-[25rem] md:w-[30rem]">
+      <div className="h-fit w-[25rem] md:w-[30rem]">
         <Bar
           options={{
             plugins: {

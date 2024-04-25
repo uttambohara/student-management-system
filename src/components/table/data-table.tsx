@@ -22,8 +22,9 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import React from "react";
+import { Input } from "../ui/input";
+import { Search } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -56,17 +57,17 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-md bg-white/20 p-6 dark:bg-zinc-800/90">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 relative">
+        <Search className="absolute left-4 text-zinc-600" size={20} />
         <Input
-          placeholder="Filter students..."
+          placeholder="Filter name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="w-[200px]"
+          className="max-w-[16rem] pl-10"
         />
       </div>
-
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
